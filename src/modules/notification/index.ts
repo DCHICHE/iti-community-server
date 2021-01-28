@@ -53,6 +53,11 @@ export function registerNotificationModule(container: Container, emitter: Domain
             throw new Error("User not found");
         }
 
+        const room = await roomRepo.findById(payload.roomId)
+        if(!room){
+            throw new Error("Room not found");
+        }
+
         await notifService.append(post.createdBy, "post_liked", {
             postId: post.id,
             preview: post.message.substr(0, 128),
@@ -60,7 +65,8 @@ export function registerNotificationModule(container: Container, emitter: Domain
                 id: user.id,
                 username: user.username,
                 photoLocation: user.photoLocation
-            }
+            },
+            roomId: room.id 
         });
     });
 
